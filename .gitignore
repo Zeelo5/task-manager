@@ -1,0 +1,43 @@
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+.env
+
+# If you are using virtual environments #
+env/
+venv/
+
+# GraphQL #
+graphiql/
+
+# If you're using IDE-specific files #
+.idea/
+.vscode/
+
+# Byte-compiled / optimized / DLL files #
+*.py[cod]
+*.so
+*.dylib
+
+# Unit test / coverage reports #
+htmlcov/
+.tox/
+.coverage
+coverage.xml
+nosetests.xml
+*.cover
+
+# Static files #
+staticfiles/
+
+# Local development #
+.DS_Store
+.env/
+*.env
+
+# Mac OS #
+.DS_Store
