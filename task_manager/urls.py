@@ -15,17 +15,33 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+# from django.contrib import admin
+# from django.urls import path, include
+# from graphene_django.views import GraphQLView
+# from tasks.schema import schema
+# from .views import home
+
+# urlpatterns = [
+#     # path('', include('tasks.urls')),
+#     path('', home, name='home'),  # Add this line to handle the root URL
+#     path('admin/', admin.site.urls),
+#     path('api/', include('tasks.urls')),  # REST API endpoint
+#     path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema)),  # GraphQL endpoint
+
+# ]
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from tasks.views import TaskViewSet, home, task_list
 from graphene_django.views import GraphQLView
-from tasks.schema import schema
-from .views import home
+
+router = DefaultRouter()
+router.register(r'tasks', TaskViewSet)
 
 urlpatterns = [
-    # path('', include('tasks.urls')),
-    path('', home, name='home'),  # Add this line to handle the root URL
-    path('admin/', admin.site.urls),
-    path('api/', include('tasks.urls')),  # REST API endpoint
-    path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema)),  # GraphQL endpoint
-
+    path('', home, name='home'),
+    path('api/', include(router.urls)),
+    path('tasks/', task_list, name='task_list'),
+    path('graphql/', GraphQLView.as_view(graphiql=True), name='graphql'),
+    path('admin/', admin.site.urls),  # Admin panel URL
 ]
