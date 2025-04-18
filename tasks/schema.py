@@ -5,6 +5,7 @@ from .models import Task
 class TaskType(DjangoObjectType):
     class Meta:
         model = Task
+        fields = "__all__" 
 
 # class Query(graphene.ObjectType):
 #     all_tasks = graphene.List(TaskType)
@@ -31,28 +32,36 @@ class Query(graphene.ObjectType):
 class CreateTask(graphene.Mutation):
     class Arguments:
         title = graphene.String(required=True)
+        description = graphene.String(required=True)
+        completed = graphene.Boolean()
 
     task = graphene.Field(TaskType)
 
-    def mutate(self, info, title):
-        task = Task(title=title)
+    def mutate(self, info, title, description, completed=False):
+        task = Task(title=title, description=description, completed=completed)
         task.save()
         return CreateTask(task=task)
+
+
 
 
 class UpdateTask(graphene.Mutation):
     class Arguments:
         id = graphene.Int(required=True)
-        title = graphene.String()
+        description = graphene.String()
+        completed = graphene.Boolean()
 
     task = graphene.Field(TaskType)
 
-    def mutate(self, info, id, title):
+    def mutate(self, info, id, description=None, completed=None):
         task = Task.objects.get(pk=id)
-        if title:
-            task.title = title
+        if description is not None:
+            task.description = description
+        if completed is not None:
+            task.completed = completed
         task.save()
         return UpdateTask(task=task)
+
 
 
 class DeleteTask(graphene.Mutation):
@@ -62,9 +71,13 @@ class DeleteTask(graphene.Mutation):
     success = graphene.Boolean()
 
     def mutate(self, info, id):
-        task = Task.objects.get(pk=id)
-        task.delete()
-        return DeleteTask(success=True)
+        try:
+            task = Task.objects.get(pk=id)
+            task.delete()
+            return DeleteTask(success=True)
+        except Task.DoesNotExist:
+            return DeleteTask(success=False)
+
 # schema.py (continued)
 class Mutation(graphene.ObjectType):
     create_task = CreateTask.Field()

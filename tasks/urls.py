@@ -49,5 +49,7 @@ urlpatterns = [
     path('api/', include(router.urls)), 
       # Route for the API using the router
     path('tasks/', task_list, name='task_list'),
-    path('graphql/', GraphQLView.as_view(graphiql=True), name='graphql'),  # GraphQL endpoint
+    # path('graphql/', GraphQLView.as_view(graphiql=True), name='graphql'),  # GraphQL endpoint
+    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True)), name='graphql'),
+
 ]
