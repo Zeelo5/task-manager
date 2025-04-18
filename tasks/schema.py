@@ -34,13 +34,20 @@ class CreateTask(graphene.Mutation):
         title = graphene.String(required=True)
         description = graphene.String(required=True)
         completed = graphene.Boolean()
+        due_date = graphene.DateTime()  # Accept dueDate
 
     task = graphene.Field(TaskType)
 
-    def mutate(self, info, title, description, completed=False):
-        task = Task(title=title, description=description, completed=completed)
+    def mutate(self, info, title, description, completed=False, due_date=None):
+        task = Task(
+            title=title,
+            description=description,
+            completed=completed,
+            due_date=due_date
+        )
         task.save()
         return CreateTask(task=task)
+
 
 
 
@@ -50,15 +57,18 @@ class UpdateTask(graphene.Mutation):
         id = graphene.Int(required=True)
         description = graphene.String()
         completed = graphene.Boolean()
+        due_date = graphene.DateTime()
 
     task = graphene.Field(TaskType)
 
-    def mutate(self, info, id, description=None, completed=None):
+    def mutate(self, info, id, description=None, completed=None, due_date=None):
         task = Task.objects.get(pk=id)
         if description is not None:
             task.description = description
         if completed is not None:
             task.completed = completed
+        if due_date is not None:
+            task.due_date = due_date
         task.save()
         return UpdateTask(task=task)
 
